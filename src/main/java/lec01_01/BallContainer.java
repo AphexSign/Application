@@ -26,20 +26,13 @@ public class BallContainer implements Iterable<Ball> {
      */
     public BallContainer() {
         // Only works when Ball uses reference equality (equals() is not overridden)
-        // contents = new LinkedHashSet<Ball>();
-//        contents = new LinkedHashSet<Ball>();
 
         contents = new TreeSet<Ball>((e1, e2) -> {
-            if (e1.getVolume() - e2.getVolume() == 0) {
-                // If two balls have the same volume we first check if they are the same object
-                //   because we need to implement reference equality, not the value equality.
-                // If two objects are the same, they are equal, so return 0.
-                // Otherwise, they are not equal, and we don't care in which order they come in
-                //   the ordering. So, we return either -1 or 1.
+            if (e1.getVolume() == e2.getVolume() ) {
                 if (e1 == e2) return 0;
                 else return -1;
             }
-            else if (e1.getVolume() - e2.getVolume() < 0) return -1;
+            else if (e2.getVolume() > e1.getVolume() ) return -1;
             else return 1;
         });
     }
