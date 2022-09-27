@@ -41,6 +41,7 @@ public class FibonacciTest {
         fib.getFibTerm(-1);
     }
 
+
     /**
      * Tests that Fibonacci throws no IllegalArgumentException
      * for zero or for a positive number.
@@ -70,6 +71,7 @@ public class FibonacciTest {
     public void testBaseCase() {
         assertEquals("getFibTerm(0)", 1, fib.getFibTerm(0));
         assertEquals("getFibTerm(1)", 1, fib.getFibTerm(1));
+
     }
 
     /** Tests inductive cases of the Fibonacci sequence */

@@ -4,38 +4,36 @@
 package lec01_01;
 
 import java.lang.Iterable;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
- * Это контейнер, который можно использовать для хранения шариков. Ключевая
- * разница между BallContainer и Box заключается в том, что Box имеет
- * конечный объем. Как только коробка заполняется, клиент не может положить больше мячей.
+ * This is a container that can be used to contain Balls. The key
+ * difference between a BallContainer and a Box is that a Box has a
+ * finite volume. Once a box is full, a client cannot put in more Balls.
  */
 public class Box implements Iterable<Ball> {
 
     /**
-     * ballContainer используется для внутреннего хранения шариков для этой коробки
+     * ballContainer is used to internally store balls for this Box
      */
     private BallContainer ballContainer;
     private double maxVolume;
 
     /**
-     * Конструктор, который создает новое поле.
-     * @param maxVolume Общий объем шариков, который может содержать это поле.
+     * Constructor that creates a new box.
+     *
+     * @param maxVolume Total volume of balls that this box can contain.
      */
     public Box(double maxVolume) {
-        // Your code goes here.  Remove the exception after you're done.
-        ballContainer=new BallContainer();
-        this.maxVolume=maxVolume;
-        //throw new RuntimeException("Method not implemented");
+        ballContainer = new BallContainer();
+        this.maxVolume = maxVolume;
     }
 
     /**
-     * Реализует итеративный интерфейс для этого поля.
-     * @возвращает итератор по объектам lec01_01.Ball, содержащимся
-     * в этом поле.
+     * Implements the Iterable interface for this box.
+     *
+     * @return an Iterator over the Ball objects contained
+     * in this box.
      */
     public Iterator<Ball> iterator() {
         return ballContainer.iterator();
@@ -43,103 +41,123 @@ public class Box implements Iterable<Ball> {
 
 
     /**
-     * Этот метод используется для добавления объектов lec01_01.Ball в это поле
-     * конечного объема. Метод возвращает значение true, если мяч находится
-     * успешно добавлен в поле, т.е. мяч еще не находится в поле
-     * и если поле еще не заполнено; и возвращает значение false,
-     * если мяч уже находится в поле или если поле слишком заполнено
-     * чтобы подогнать новый мяч.
-     * @param - Мяч должен быть добавлен.
-     * @возвращает значение true, если мяч был успешно добавлен в поле,
-     * т.е. мяч еще не находится в поле, и если поле не
-     * уже заполнен. Возвращает значение false, если мяч уже находится в штрафной или
-     * если коробка слишком полна, чтобы вместить новый мяч.
+     * This method is used to add Ball objects to this box of
+     * finite volume.  The method returns true if a ball is
+     * successfully added to the box, i.e., the ball is not already in the
+     * box and if the box is not already full; and it returns false,
+     * if the ball is already in the box or if the box is too full
+     * to fit the new ball.
+     *
+     * @param b Ball to be added.
+     * @return true if the ball was successfully added to the box,
+     * i.e., the ball is not already in the box and if the box is not
+     * already full. Returns false, if the ball is already in the box or
+     * if the box is too full to fit the new ball.
      */
     public boolean add(Ball b) {
-        // Your code goes here.  Remove the exception after you're done.
 
-        if((getVolume()+b.getVolume()>maxVolume) || contains(b)){
+        if ((getVolume() + b.getVolume() > maxVolume) || contains(b)) {
             return false;
-        } else {return ballContainer.add(b);}
+        } else {
+            return ballContainer.add(b);
+        }
 
 
-        //throw new RuntimeException("Method not implemented");
     }
 
     /**
-     * Этот метод возвращает итератор, который перебирает все шары в
-     * этом поле в порядке возрастания их размера, т.е. сначала возвращает
-     * наименьший lec01_01.Ball, за которым следуют шары увеличивающегося размера.
-     * @return итератор, который возвращает все шары в этом поле в
-     * порядок возрастания по lec01_01.Размер шара.
+     * This method returns an iterator that iterates over all balls in
+     * this box in ascending order by their size, i.e., it returns the
+     * smallest Ball first, followed by Balls of increasing size.
+     *
+     * @return an iterator that returns all balls in this box in
+     * ascending order by Ball size.
      */
     public Iterator<Ball> getBallsFromSmallest() {
-        // Your code goes here.  Remove the exception after you're done.
-        //Создаем дерево в котором будет хранится наше множество, в порядке возрастания
-        //Напишем компаратор для правильной работы
 
-        TreeSet<Ball> treeBall=new TreeSet<>(new Comparator<Ball>() {
-            @Override
-            public int compare(Ball o1, Ball o2) {
-                return Double.compare(o1.getVolume(),o2.getVolume());
+        List<Ball> tmpList = new ArrayList<>();
+        for (Ball ball : ballContainer) {
+            tmpList.add(ball);
+        }
+        Collections.sort(tmpList, (ball1, ball2) -> {
+            if ((ball1.getVolume() - ball2.getVolume())<0) {
+                return -1;
+            } else if (ball1.getVolume() == ball2.getVolume()) {
+                return 0;
+            } else {
+                return 1;
             }
         });
-        //Компаратор для перебора нашей коллекции
-        Iterator<Ball> itBall=iterator();
-        //Передача в TreeSet - нашей случайно коллекции
-        while (itBall.hasNext()){
-            treeBall.add(itBall.next());
-        }
-        return treeBall.iterator();
+        return tmpList.iterator();
 
-        //throw new RuntimeException("Method not implemented");
+
+//        TreeSet<Ball> treeBall=new TreeSet<>(new Comparator<Ball>() {
+//            @Override
+//            public int compare(Ball o1, Ball o2) {
+//                return Double.compare(o1.getVolume(),o2.getVolume());
+//            }
+//        });
+//        //Компаратор для перебора нашей коллекции
+//        Iterator<Ball> itBall=iterator();
+//        //Передача в TreeSet - нашей случайно коллекции
+//        while (itBall.hasNext()){
+//            treeBall.add(itBall.next());
+//        }
+//        return treeBall.iterator();
+
+
+
     }
 
     /**
-     * Вынимает мяч из коробки. Этот метод возвращает
-     * <tt>true</tt>, если мяч был успешно извлечен из
-     контейнера *, т.е. мяч действительно находился в коробке. Вы не можете
-     * удалите lec01_01.Ball, если его еще нет в коробке, поэтому в этом
-     * случай, когда метод возвращает <tt>false</tt>.
-     * @param -b_01_01.Мяч должен быть удален.
-     * @возвращает значение true, если мяч был успешно удален из коробки,
-     * т.е. мяч действительно находился в коробке. Возвращает значение false, если мяч не
-     * в коробке.
+     * Removes a ball from the box. This method returns
+     * <tt>true</tt> if the ball was successfully removed from the
+     * container, i.e., the ball was actually in the box. You cannot
+     * remove a Ball if it is not already in the box, therefore in this
+     * case the method returns <tt>false</tt>.
+     *
+     * @param b Ball to be removed.
+     * @return true if the ball was successfully removed from the box,
+     * i.e., the ball was actually in the box. Returns false, if the ball is not
+     * in the box.
      */
     public boolean remove(Ball b) {
         return ballContainer.remove(b);
     }
 
     /**
-     * Каждый lec01_01.Ball имеет объем. Этот метод возвращает общий объем
-     * всех шаров в коробке.
-     * @возвращает объем содержимого коробки.
+     * Each Ball has a volume. This method returns the total volume of
+     * all Balls in the box.
+     *
+     * @return the volume of the contents of the box.
      */
     public double getVolume() {
         return ballContainer.getVolume();
     }
 
     /**
-     * Возвращает количество шаров в этом поле.
-     * @возвращает количество шаров в этом поле.
+     * Returns the number of Balls in this box.
+     *
+     * @return the number of Balls in this box.
      */
     public int size() {
         return ballContainer.size();
     }
 
     /**
-     * Опустошает коробку, т.е. удаляет все ее содержимое.
+     * Empties the box, i.e., removes all its contents.
      */
     public void clear() {
         ballContainer.clear();
     }
 
     /**
-     * Этот метод возвращает <tt>true</tt>, если это поле содержит
-     * указанный lec01_01.Ball. В противном случае он возвращает <tt>false</tt>.
-     * @param - b_01_01.Мяч должен быть проверен, если он находится в поле
-     * @возвращает значение true, если это поле содержит указанный lec01_01.Ball. Возвращается
-     * в противном случае значение false.
+     * This method returns <tt>true</tt> if this box contains
+     * the specified Ball. It returns <tt>false</tt> otherwise.
+     *
+     * @param b Ball to be checked if its in box
+     * @return true if this box contains the specified Ball. Returns
+     * false otherwise.
      */
     public boolean contains(Ball b) {
         return ballContainer.contains(b);
